@@ -1,0 +1,53 @@
+# This assumes that admin has manually created the pool, but not necessarily
+# the filesystem. For ~ RAID10 on 4 disks:
+#   for d in c d e f ; do parted /dev/sd${d} mklabel gpt ; done
+#   zpool create pool0 mirror /dev/sdc /dev/sdd
+#   zpool    add pool0 mirror /dev/sde /dev/sdf
+- hosts: localhost
+  vars:
+    zfs_dataset: pool0/homes
+    anongid: 1000
+    anonuid: 1000
+    mount_path: /export/pool0/homes
+  tasks:
+    - name: install zfsutils-linux
+      apt:
+        name: zfsutils-linux
+        state: installed
+      become: true
+
+    - name: create zfs filesystem
+      zfs:
+        name: "{{ zfs_dataset }}"
+        state: present
+      become: true
+
+    - name: gather zfs facts
+      zfs_facts:
+        dataset: "{{ zfs_dataset }}"
+        type: filesystem
+      become: true
+
+    - name: check if zfs dataset is mounted
+      fail:
+        msg: "{{ zfs_dataset }} not mounted"
+      with_items: "{{ ansible_zfs_datasets }}"
+      when: item.name == zfs_dataset and item.mounted != "yes"
+      become: true
+
+    - name: create mount path directory
+      file:
+        path: "{{ mount_path }}"
+        state: directory
+        recurse: yes
+      become: true
+
+    - name: set permissions on /export
+      file:
+        path: /export
+        state: directory
+        recurse: yes
+        owner: "{{ anongid }}"
+        group: "{{ anongid }}"
+        mode: 0755
+      become: true

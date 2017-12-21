@@ -1,0 +1,4 @@
+{
+	"fileUris": ["https://raw.githubusercontent.com/ryanlovett/data100/master/az-zpool.sh"],
+	"commandToExecute": "bash az-zpool.sh"
+}

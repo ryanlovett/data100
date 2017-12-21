@@ -10,6 +10,6 @@ set -e
 	apt-get -y install ansible
 } > /dev/null
 (
-	cd k8s-nfs-ansible
+	cd data100
 	sudo -u jupyterhub -H ansible-playbook -i hosts playbook.yml
 )

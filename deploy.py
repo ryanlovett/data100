@@ -107,7 +107,7 @@ cmd = ['scp'] + ssh_opts + ['-r', 'bootstrap', ssh_host + ':']
 sp.check_call(cmd)
 
 # copy ansible playbook
-cmd = ['ssh'] + ssh_opts + [ssh_host, "git clone https://github.com/berkeley-dsep-infra/k8s-nfs-ansible.git"]
+cmd = ['ssh'] + ssh_opts + [ssh_host, "git clone https://github.com/ryanlovett/data100.git"]
 sp.check_call(cmd)
 
 # copy ssh keys
