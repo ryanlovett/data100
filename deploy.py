@@ -105,27 +105,29 @@ cmd = ['az', 'vm', 'extension', 'set',
 r = sp.check_output(cmd, universal_newlines=True)
 
 # prepare to connect to master
-ssh_opts = ['-i', ssh_key, '-o', 'UserKnownHostsFile=/dev/null', '-o', \
-	'StrictHostKeyChecking=no', '-o', 'User=jupyterhub']
+ssh_opts = [
+	'-i', ssh_key,
+	'-o', 'UserKnownHostsFile=/dev/null',
+	'-o', 'StrictHostKeyChecking=no',
+	'-o', 'User=jupyterhub'
+	'-o', 'PreferredAuthentications=publickey'
+]
 ssh_host = '{}.{}.cloudapp.azure.com'.format(args.name, args.location)
 os.environ['SSH_AUTH_SOCK'] = ''
 
 # verify ssh works
 cmd = ['ssh'] + ssh_opts + [ssh_host, 'true']
-sp.check_call(cmd)
-
-# copy bootstrap code/data
-#cmd = ['scp'] + ssh_opts + ['-r', 'bootstrap', ssh_host + ':']
-#sp.check_call(cmd)
+try:
+	sp.check_call(cmd)
+except Exception as e:
+	print("Error running command:")
+	print(cmd.join(" "))
+	print(str(e))
 
 # copy ansible playbook
 cmd = ['ssh'] + ssh_opts + [ssh_host, "git clone https://github.com/ryanlovett/data100.git"]
 sp.check_call(cmd)
 
-# copy ssh keys
-#cmd = ['scp'] + ssh_opts + [ssh_key, ssh_key_pub, ssh_host + ':.ssh/']
-#sp.check_call(cmd)
-
-# setup the cluster
+# run bootstrap
 cmd = ['ssh'] + ssh_opts + [ssh_host, "sudo bash data100/bootstrap.bash " + args.name]
 sp.check_call(cmd)
