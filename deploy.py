@@ -103,17 +103,17 @@ cmd = ['ssh'] + ssh_opts + [ssh_host, 'true']
 sp.check_call(cmd)
 
 # copy bootstrap code/data
-cmd = ['scp'] + ssh_opts + ['-r', 'bootstrap', ssh_host + ':']
-sp.check_call(cmd)
+#cmd = ['scp'] + ssh_opts + ['-r', 'bootstrap', ssh_host + ':']
+#sp.check_call(cmd)
 
 # copy ansible playbook
 cmd = ['ssh'] + ssh_opts + [ssh_host, "git clone https://github.com/ryanlovett/data100.git"]
 sp.check_call(cmd)
 
 # copy ssh keys
-cmd = ['scp'] + ssh_opts + [ssh_key, ssh_key_pub, ssh_host + ':.ssh/']
-sp.check_call(cmd)
+#cmd = ['scp'] + ssh_opts + [ssh_key, ssh_key_pub, ssh_host + ':.ssh/']
+#sp.check_call(cmd)
 
 # setup the cluster
-cmd = ['ssh'] + ssh_opts + [ssh_host, "sudo bash bootstrap/setup.bash " + args.name]
+cmd = ['ssh'] + ssh_opts + [ssh_host, "sudo bash data100/bootstrap.bash " + args.name]
 sp.check_call(cmd)

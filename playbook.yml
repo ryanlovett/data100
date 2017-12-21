@@ -1,8 +1,11 @@
+---
+
 # This assumes that admin has manually created the pool, but not necessarily
 # the filesystem. For ~ RAID10 on 4 disks:
 #   for d in c d e f ; do parted /dev/sd${d} mklabel gpt ; done
 #   zpool create pool0 mirror /dev/sdc /dev/sdd
 #   zpool    add pool0 mirror /dev/sde /dev/sdf
+#
 - hosts: localhost
   vars:
     zfs_dataset: pool0/homes
