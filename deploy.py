@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import argparse
 import json
@@ -67,8 +67,8 @@ cmd = ['az', 'vm', 'create', '-n', vm_name,
 	'--resource-group', args.name,
 	'--ssh-key-value', ssh_key_pub,
 	'--size', 'Standard_E4s_v3', '--storage-sku', 'Premium_LRS',
-	'--vnet-name', agent_pool_vnet_name,
-	'--subnet', agent_pool_subnet_name,
+	#'--vnet-name', agent_pool_vnet_name,
+	#'--subnet', agent_pool_subnet_name,
 	'--location', 'West US 2',
 	'--image', 'canonical:ubuntuserver:17.04:latest']
 vm_create = sp.check_output(cmd, universal_newlines=True)
