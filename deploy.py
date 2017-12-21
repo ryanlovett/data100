@@ -60,17 +60,29 @@ else:
 	rbac_s = open(rbac_file).read()
 rbac = json.loads(rbac_s)
 
+# check our groups
+cmd = ['az', 'group', 'list', '--query', "[?name=='{}']".format(args.name)]
+r = sp.check_output(cmd)
+groups = json.loads(r.decode())
+if len(groups) == 0:
+	print("Creating group: {}".format(args.name))
+	cmd = ['az', 'group', 'create', '-n', args.name, '-l', args.location]
+	r = sp.check_output(cmd)
+else:
+	print("Using existing group: {}".format(args.name))
+
 # create hub server
 vm_name = 'hub'
-cmd = ['az', 'vm', 'create', '-n', vm_name,
-	'--admin-username', 'jupyterhub',
-	'--resource-group', args.name,
-	'--ssh-key-value', ssh_key_pub,
-	'--size', 'Standard_E4s_v3', '--storage-sku', 'Premium_LRS',
-	#'--vnet-name', agent_pool_vnet_name,
-	#'--subnet', agent_pool_subnet_name,
-	'--location', 'West US 2',
-	'--image', 'canonical:ubuntuserver:17.04:latest']
+cmd = [
+	'az', 'vm', 'create',
+		'-n', vm_name,
+		'--admin-username', 'jupyterhub',
+		'--resource-group', args.name,
+		'--ssh-key-value', ssh_key_pub,
+		'--size', 'Standard_E4s_v3',
+		'--storage-sku', 'Premium_LRS',
+		'--image', 'canonical:ubuntuserver:17.04:latest'
+]
 vm_create = sp.check_output(cmd, universal_newlines=True)
 write_json(os.path.join(args.name, vm_name + '.json'), vm_create)
 
