@@ -11,5 +11,5 @@ set -e
 } > /dev/null
 (
 	cd data100
-	sudo -u jupyterhub -H ansible-playbook -i hosts playbook.yml
+	sudo -u jupyterhub -H ansible-playbook playbook.yml
 )
