@@ -109,8 +109,8 @@ ssh_opts = [
 	'-i', ssh_key,
 	'-o', 'UserKnownHostsFile=/dev/null',
 	'-o', 'StrictHostKeyChecking=no',
+	'-o', 'PreferredAuthentications=publickey',
 	'-o', 'User=jupyterhub'
-	'-o', 'PreferredAuthentications=publickey'
 ]
 ssh_host = '{}.{}.cloudapp.azure.com'.format(args.name, args.location)
 os.environ['SSH_AUTH_SOCK'] = ''
@@ -121,7 +121,7 @@ try:
 	sp.check_call(cmd)
 except Exception as e:
 	print("Error running command:")
-	print(cmd.join(" "))
+	print(" ".join(cmd))
 	print(str(e))
 
 # copy ansible playbook
